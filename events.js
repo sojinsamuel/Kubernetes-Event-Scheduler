@@ -1,4 +1,3 @@
-import fetch from "node-fetch";
 import { readFile, writeFile } from "node:fs/promises";
 import { html } from "satori-html";
 import satori from "satori";
@@ -74,8 +73,17 @@ const events = [
   },
 ];
 
+const base64Image = async (filename) => {
+  const file = await readFile(filename, "base64");
+  return `data:image/png;base64,${file}`;
+};
+
+const bottomImg = await base64Image("./bottom-img.png");
+const logoImg = await base64Image("./logo.png");
+
 const template = html(`
-  <div style="display: flex; flex-wrap: wrap; margin: 2em 4em; position: relative">
+  <div style="display: flex; flex-wrap: wrap; margin: 2em 4em; position: relative;">
+  <img width="34" height="200" src="${bottomImg}" style="position: absolute; width: 100vw; bottom: 0" />
       <div style="display: flex; flex-direction: column;">
         <h1>Kubernetes Events starting in the next 24 hours:</h1>
         ${events
@@ -85,7 +93,7 @@ const template = html(`
           )
           .join(" ")}
       </div>
-      <p style="position: absolute; bottom: -15px; right: 250px; margin: 0;">logo</p>
+      <img width="34" height="43" src="${logoImg}" style="position: absolute; bottom: -15px; right: 240px; margin: 0;" />
   </div>
 `);
 
